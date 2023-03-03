@@ -1,6 +1,7 @@
 [<img src="https://raw.githubusercontent.com/recommend-pro/recommend-android-sdk/master/assets/logo.png">](https://recommend.pro)
 # Recommend Android SDK
 [![GitHub release](https://img.shields.io/github/release/recommend-pro/recommend-android-sdk.svg)](https://github.com/recommend-pro/recommend-android-sdk/releases)
+[![](https://jitpack.io/v/recommend-pro/recommend-android-sdk.svg)](https://jitpack.io/#recommend-pro/recommend-android-sdk)
 [![License](https://img.shields.io/github/license/recommend-pro/recommend-android-sdk)](https://github.com/recommend-pro/recommend-android-sdk/blob/master/LICENSE)
 
 The Recommend Android SDK allows you to quickly and easily integrate Recommend personal customer experiences in your Android app.
