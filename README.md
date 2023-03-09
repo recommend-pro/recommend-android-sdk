@@ -41,7 +41,7 @@ Add `recommend-android-sdk` to your `build.gradle` dependencies:
 
 ```
 dependencies {
-    implementation 'com.recommend:recommend-android-sdk:$latest_version'
+    implementation 'com.github.recommend-pro:recommend-android-sdk:$latest_version'
 }
 ```
 
