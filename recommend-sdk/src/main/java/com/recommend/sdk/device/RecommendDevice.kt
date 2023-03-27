@@ -39,7 +39,6 @@ class RecommendDevice(
     private val apiContactService: ApiDeviceService = ApiServiceBuilder.getService(
         recommend.config.accountId,
         recommend.config.apiHost,
-        ApiHelper(recommend.context),
         ApiDeviceService::class.java,
         recommend.getLogger()
     )

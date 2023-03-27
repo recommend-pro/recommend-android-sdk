@@ -7,11 +7,8 @@ import com.recommend.sdk.recommendation.data.api.request.RecommendationPanelRequ
 import com.recommend.sdk.recommendation.data.api.request.RecommendationPanelsRequest
 import com.recommend.sdk.recommendation.data.model.PanelContentType
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 import junit.framework.TestCase.assertEquals
 
-@RunWith(RobolectricTestRunner::class)
 class JsonSerializeTest {
     @Test
     fun `test nullable serialization with nullable values in nested objects`() {

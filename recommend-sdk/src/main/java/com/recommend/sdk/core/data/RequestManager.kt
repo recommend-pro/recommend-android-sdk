@@ -1,7 +1,9 @@
 package com.recommend.sdk.core.data
 
+import com.recommend.sdk.core.data.exception.NoConnectionException
 import com.recommend.sdk.core.data.exception.RawApiErrorResponseException
 import com.recommend.sdk.core.data.exception.WrongApiResponseException
+import com.recommend.sdk.core.data.util.ApiHelper
 import com.recommend.sdk.core.util.RecommendLogger
 import retrofit2.Call
 import java.util.*
@@ -9,7 +11,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class RequestManager(private val logger: RecommendLogger) {
+class RequestManager(private val logger: RecommendLogger, private val apiHelper: ApiHelper) {
     private var taskQueue: LinkedList<RequestTask<*>> = LinkedList<RequestTask<*>>()
     private var isTaskProcessing: Boolean = false
 
@@ -21,19 +23,19 @@ class RequestManager(private val logger: RecommendLogger) {
                 taskQueue.add(requestTask)
             }
         } else {
-            requestTask.call.enqueue(object: Callback<T> {
-                override fun onResponse(call: Call<T>, response: Response<T>) {
-                    requestTask.dataListener?.successCallback?.let { it(response.body(), requestTask) }
-                }
-
-                override fun onFailure(call: Call<T>, t: Throwable) {
-                    requestTask.dataListener?.errorCallback?.let { it(t, requestTask) }
-                }
-            })
+            execute(requestTask)
         }
     }
 
     private fun <T> execute(requestTask: RequestTask<T>) {
+        if (!apiHelper.isInternetAvailable()) {
+            isTaskProcessing = false
+            val exception = NoConnectionException()
+            logger.logRequestException(exception)
+            requestTask.dataListener?.errorCallback?.let { it(exception, requestTask) }
+            processNextTask()
+        }
+
         isTaskProcessing = true
         logger.logRawRequest(requestTask)
         requestTask.call.enqueue(object: Callback<T> {

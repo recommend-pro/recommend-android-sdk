@@ -11,7 +11,6 @@ import com.recommend.sdk.core.data.util.ApiHelper
 import com.recommend.sdk.core.util.DateTimeHelper
 import com.recommend.sdk.core.util.RecommendLogger
 import com.recommend.sdk.device.data.api.ApiDeviceService
-import com.recommend.sdk.device.data.model.activity.DeviceOpenAppActivity
 import com.recommend.sdk.device.data.api.request.DeviceActivityRequest
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -25,13 +24,16 @@ import java.util.concurrent.TimeUnit
 
 @RunWith(RobolectricTestRunner::class)
 class ApiManagerTest {
-    private val apiManager = ApiManager(ApplicationProvider.getApplicationContext(), RecommendLogger())
+    private val apiManager = ApiManager(
+        ApplicationProvider.getApplicationContext(),
+        RecommendLogger(),
+        ApiHelper(
+            ApplicationProvider.getApplicationContext()
+        )
+    )
     private val apiTrackerService = ApiServiceBuilder.getService(
         "testAppId",
         "https://test-api-host.com",
-        ApiHelper(
-            ApplicationProvider.getApplicationContext()
-        ),
         ApiDeviceService::class.java,
         RecommendLogger()
     )

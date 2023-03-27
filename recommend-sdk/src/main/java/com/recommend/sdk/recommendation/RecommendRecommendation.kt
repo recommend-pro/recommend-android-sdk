@@ -28,7 +28,6 @@ class RecommendRecommendation(
     private val apiRecommendationService: ApiRecommendationService = ApiServiceBuilder.getService(
         recommend.config.accountId,
         recommend.config.apiHost,
-        ApiHelper(recommend.context),
         ApiRecommendationService::class.java,
         recommend.getLogger()
     )

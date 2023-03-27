@@ -1,19 +1,27 @@
 package com.recommend.sdk
 
+import androidx.test.core.app.ApplicationProvider
 import com.recommend.sdk.core.data.RequestManager
 import com.recommend.sdk.core.data.RequestTask
 import com.recommend.sdk.core.data.listener.DataListener
+import com.recommend.sdk.core.data.util.ApiHelper
 import com.recommend.sdk.core.util.RecommendLogger
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 import java.lang.RuntimeException
 import java.lang.Thread.sleep
 import java.util.concurrent.CompletableFuture
 
+@RunWith(RobolectricTestRunner::class)
 class RequestManagerTest {
-    private val requestManager = RequestManager(RecommendLogger())
+    private val requestManager = RequestManager(
+        RecommendLogger(),
+        ApiHelper(ApplicationProvider.getApplicationContext())
+    )
 
     @Test
     fun `requests success one in queue`() {

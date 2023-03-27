@@ -6,12 +6,13 @@ import com.recommend.sdk.core.data.exception.ApiErrorResponseException
 import com.recommend.sdk.core.data.exception.NoConnectionException
 import com.recommend.sdk.core.data.exception.RawApiErrorResponseException
 import com.recommend.sdk.core.data.listener.DataListener
+import com.recommend.sdk.core.data.util.ApiHelper
 import com.recommend.sdk.core.util.JsonHelper
 import com.recommend.sdk.core.util.RecommendLogger
 import java.util.concurrent.TimeUnit
 
-class ApiManager(private val context: Context, private val recommendLogger: RecommendLogger) {
-    private val requestManager = RequestManager(recommendLogger)
+class ApiManager(private val context: Context, recommendLogger: RecommendLogger, apiHelper: ApiHelper) {
+    private val requestManager = RequestManager(recommendLogger, apiHelper)
 
     fun <T> processTask(apiTask: ApiTask<T>) {
         requestManager.executeRequest(

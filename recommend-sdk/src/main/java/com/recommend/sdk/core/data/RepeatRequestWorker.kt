@@ -27,7 +27,7 @@ class RepeatRequestWorker(private val appContext: Context, workerParams: WorkerP
 
         val recommendLogger = RecommendLogger()
 
-        val okHttpClient = ApiServiceBuilder.getApiClient(ApiHelper(appContext), recommendLogger)
+        val okHttpClient = ApiServiceBuilder.getApiClient(recommendLogger)
 
         val request = Request.Builder()
         request.url(serializedRequest.url)
@@ -48,7 +48,7 @@ class RepeatRequestWorker(private val appContext: Context, workerParams: WorkerP
 
         Log.d(RecommendLogger.LOG_TAG, "Request worker is repeating request: $request")
 
-        val apiManager = ApiManager(appContext, recommendLogger)
+        val apiManager = ApiManager(appContext, recommendLogger, ApiHelper(appContext))
 
         return try {
             val response = okHttpClient.newCall(request.build()).execute()

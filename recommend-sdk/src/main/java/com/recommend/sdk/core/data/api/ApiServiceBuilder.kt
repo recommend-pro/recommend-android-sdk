@@ -13,23 +13,22 @@ class ApiServiceBuilder {
         fun <T> getService(
             applicationId: String,
             apiHost: String,
-            apiHelper: ApiHelper,
             apiServiceInterface: Class<T>,
             recommendLogger: RecommendLogger
         ): T {
             val retrofit = retrofit2.Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(JsonHelper.getGson()))
-                .client(getApiClient(apiHelper, recommendLogger))
+                .client(getApiClient(recommendLogger))
                 .baseUrl("$apiHost/$applicationId/")
                 .build()
 
             return retrofit.create(apiServiceInterface)
         }
 
-        fun getApiClient(apiHelper: ApiHelper, recommendLogger: RecommendLogger): OkHttpClient {
+        fun getApiClient(recommendLogger: RecommendLogger): OkHttpClient {
             return OkHttpClient()
                 .newBuilder()
-                .addInterceptor(HttpRequestInterceptor(apiHelper))
+                .addInterceptor(HttpRequestInterceptor())
                 .addInterceptor(HttpResponseInterceptor(recommendLogger))
                 .readTimeout(10, TimeUnit.SECONDS)
                 .connectTimeout(10, TimeUnit.SECONDS)

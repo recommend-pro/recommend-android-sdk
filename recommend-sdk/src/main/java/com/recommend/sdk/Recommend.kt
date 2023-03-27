@@ -6,6 +6,7 @@ import com.recommend.sdk.core.data.ApiManager
 import com.recommend.sdk.core.data.model.CurrentState
 import com.recommend.sdk.core.data.model.Environment
 import com.recommend.sdk.core.data.model.Metrics
+import com.recommend.sdk.core.data.util.ApiHelper
 import com.recommend.sdk.core.exception.RecommendNotInitException
 import com.recommend.sdk.core.util.LoggingBehavior
 import com.recommend.sdk.core.util.RecommendLogger
@@ -43,7 +44,7 @@ class Recommend private constructor(
     private val job = SupervisorJob()
     private val scope = CoroutineScope(Dispatchers.IO + job)
     private val recommendLogger = RecommendLogger()
-    private val apiManager = ApiManager(context, recommendLogger)
+    private val apiManager = ApiManager(context, recommendLogger, ApiHelper(context))
     internal val currentStateManager = CurrentStateManager(context)
     private val recommendMessaging = RecommendMessaging(this)
     private val recommendDevice =  RecommendDevice(this)
