@@ -312,8 +312,12 @@ class RecommendMessaging(
             }
 
             val firstSubscribedDate = if (currentState.firstSubscribedDate == null) {
-                currentState.firstSubscribedDate = currentTime
-                null
+                if (subscriptionStatus == MessagingPushSubscriptionStatus.SUBSCRIBED) {
+                    currentState.firstSubscribedDate = currentTime
+                    currentState.firstSubscribedDate
+                } else {
+                    null
+                }
             } else {
                 currentState.firstSubscribedDate
             }
