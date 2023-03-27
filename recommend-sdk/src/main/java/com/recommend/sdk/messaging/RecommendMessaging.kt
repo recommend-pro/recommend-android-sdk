@@ -61,7 +61,6 @@ class RecommendMessaging(
     private val apiMessagingService: ApiMessagingService = ApiServiceBuilder.getService(
         recommend.config.accountId,
         recommend.config.apiHost,
-        ApiHelper(recommend.context),
         ApiMessagingService::class.java,
         recommend.getLogger()
     )
