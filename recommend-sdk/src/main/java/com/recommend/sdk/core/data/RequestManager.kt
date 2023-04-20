@@ -68,6 +68,7 @@ class RequestManager(private val logger: RecommendLogger, private val apiHelper:
         })
     }
 
+    @Synchronized
     private fun processNextTask() {
         if (taskQueue.isNotEmpty()) {
             val task = taskQueue.pop()
