@@ -167,6 +167,13 @@ class RecommendDevice(
             )
         }
 
+        val defaultMetrics = recommend.config.defaultMetrics
+        val finalMetrics = if (metrics != null && defaultMetrics != null) {
+            RecommendDeviceHelper.mergeMetrics(metrics, defaultMetrics)
+        } else {
+            metrics ?: defaultMetrics
+        }
+
         scope.launch {
             recommend.getApiManager().processTask(
                 ApiTask(
@@ -181,7 +188,7 @@ class RecommendDevice(
                                 activityEnvironment.priceList?.code,
                                 DateTimeHelper.getDeviceTime(),
                                 DateTimeHelper.getCurrentTime(),
-                                metrics ?: recommend.config.defaultMetrics,
+                                finalMetrics,
                                 activityRequests
                             )
                         )

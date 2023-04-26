@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.provider.Settings
 import android.telephony.TelephonyManager
+import com.recommend.sdk.core.data.model.Metrics
 
 class RecommendDeviceHelper {
     companion object {
@@ -28,6 +29,28 @@ class RecommendDeviceHelper {
             } catch (e: Throwable) {
                 Build.MODEL + " " + Build.MANUFACTURER
             }
+        }
+
+        fun mergeMetrics(defaultMetrics: Metrics, newMetrics: Metrics): Metrics {
+            val metricsData = mutableListOf<Metrics.Metric>()
+
+            val metricsMap = mutableMapOf<String, String>()
+            defaultMetrics.data.forEach {
+                metricsMap[it.code] = it.value
+            }
+
+            newMetrics.data.forEach {
+                metricsMap[it.code] = it.value
+            }
+
+            metricsMap.forEach{
+                metricsData.add(Metrics.Metric(it.key, it.value))
+            }
+
+            return Metrics(
+                newMetrics.nonInteractive,
+                metricsData
+            )
         }
 
         fun getDetectedCountry(context: Context, defaultCountryIsoCode: String): String {
@@ -70,7 +93,11 @@ class RecommendDeviceHelper {
 
         private fun detectLocaleCountry(context: Context): String? {
             try {
-                val localeCountryISO = context.resources.configuration.locales[0].country
+                val localeCountryISO = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    context.resources.configuration.locales[0].country
+                } else {
+                    context.resources.configuration.locale.country
+                }
                 return localeCountryISO
             }
             catch (e: Exception) {
