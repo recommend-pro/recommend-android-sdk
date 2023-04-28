@@ -27,6 +27,7 @@ class RequestManager(private val logger: RecommendLogger, private val apiHelper:
         }
     }
 
+    @Synchronized
     private fun <T> execute(requestTask: RequestTask<T>) {
         if (!apiHelper.isInternetAvailable()) {
             isTaskProcessing = false
@@ -34,6 +35,7 @@ class RequestManager(private val logger: RecommendLogger, private val apiHelper:
             logger.logRequestException(exception)
             requestTask.dataListener?.errorCallback?.let { it(exception, requestTask) }
             processNextTask()
+            return
         }
 
         isTaskProcessing = true
@@ -70,11 +72,9 @@ class RequestManager(private val logger: RecommendLogger, private val apiHelper:
 
     @Synchronized
     private fun processNextTask() {
-        if (taskQueue.isNotEmpty()) {
-            val task = taskQueue.pop()
-            if (task != null) {
-                execute(task)
-            }
+        val task = taskQueue.poll()
+        if (task != null) {
+            execute(task)
         }
     }
 }
