@@ -19,7 +19,6 @@ import com.recommend.sdk.core.data.ApiTask
 import com.recommend.sdk.core.data.RequestTask
 import com.recommend.sdk.core.data.api.ApiServiceBuilder
 import com.recommend.sdk.core.data.listener.DataListener
-import com.recommend.sdk.core.data.util.ApiHelper
 import com.recommend.sdk.core.exception.RecommendException
 import com.recommend.sdk.core.util.DateTimeHelper
 import com.recommend.sdk.core.util.JsonHelper
@@ -137,85 +136,81 @@ class RecommendMessaging(
                 return
             }
 
-            scope.launch {
-                val currentState = recommend.currentStateManager.getCurrentState()
-
-                if (currentState.isSubscribedToPush == true && areNotificationsEnabled()) {
-                    val notificationManager = recommend.context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        val notificationChannel = NotificationChannel(
-                            NOTIFICATION_CHANNEL_ID,
-                            "Recommend Notifications",
-                            NotificationManager.IMPORTANCE_HIGH
-                        )
-                        notificationChannel.description = "Recommend notifications channel"
-                        notificationChannel.enableLights(true)
-                        notificationChannel.lightColor = Color.RED
-                        notificationChannel.vibrationPattern = longArrayOf(0, 250, 250)
-                        notificationChannel.enableVibration(true)
-                        notificationManager.createNotificationChannel(notificationChannel)
-                    }
-
-                    val builder: NotificationCompat.Builder = NotificationCompat.Builder(recommend.context, NOTIFICATION_CHANNEL_ID)
-
-                    val time = System.currentTimeMillis()
-                    val notificationId = (time / 1000).toInt()
-
-                    if (recommendPush.url != null) {
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(recommendPush.url))
-                        intent.putExtra(RECOMMEND_PUSH_PAYLOAD, JsonHelper.toJson(recommendPush))
-
-                        val pendingIntent = PendingIntent.getActivity(
-                            recommend.context,
-                            notificationId,
-                            intent,
-                            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-                        )
-
-                        builder.setContentIntent(pendingIntent)
-                    }
-
-                    val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-
-                    if(smallIconDrawable != null) {
-                        builder.setSmallIcon(smallIconDrawable!!)
-                    } else {
-                        builder.setSmallIcon(recommend.context.applicationInfo.icon)
-                    }
-
-                    builder.setContentTitle(recommendPush.title)
-                    builder.setContentText(recommendPush.body)
-                    builder.setSound(uri)
-                    builder.setVibrate(longArrayOf(0, 250, 250))
-                    builder.setAutoCancel(true)
-
-                    if (recommendPush.image != null) {
-                        try {
-                            val bigPictureStyle = NotificationCompat.BigPictureStyle()
-                            bigPictureStyle.bigPicture(getImage(recommendPush.image))
-
-                            if (recommendPush.title != null) {
-                                bigPictureStyle.setBigContentTitle(recommendPush.title)
-                            }
-
-                            if (recommendPush.body != null) {
-                                bigPictureStyle.setSummaryText(recommendPush.body)
-                            }
-
-                            builder.setStyle(bigPictureStyle)
-                            builder.setLargeIcon(getImage(recommendPush.image))
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                    }
-
-                    builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-
-                    val notification = builder.build()
-                    notificationManager.notify(notificationId, notification)
-                } else {
-                    checkAndUpdateSubscriptionStatus()
+            if (areNotificationsEnabled()) {
+                val notificationManager = recommend.context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    val notificationChannel = NotificationChannel(
+                        NOTIFICATION_CHANNEL_ID,
+                        "Recommend Notifications",
+                        NotificationManager.IMPORTANCE_HIGH
+                    )
+                    notificationChannel.description = "Recommend notifications channel"
+                    notificationChannel.enableLights(true)
+                    notificationChannel.lightColor = Color.RED
+                    notificationChannel.vibrationPattern = longArrayOf(0, 250, 250)
+                    notificationChannel.enableVibration(true)
+                    notificationManager.createNotificationChannel(notificationChannel)
                 }
+
+                val builder: NotificationCompat.Builder = NotificationCompat.Builder(recommend.context, NOTIFICATION_CHANNEL_ID)
+
+                val time = System.currentTimeMillis()
+                val notificationId = (time / 1000).toInt()
+
+                if (recommendPush.url != null) {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(recommendPush.url))
+                    intent.putExtra(RECOMMEND_PUSH_PAYLOAD, JsonHelper.toJson(recommendPush))
+
+                    val pendingIntent = PendingIntent.getActivity(
+                        recommend.context,
+                        notificationId,
+                        intent,
+                        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                    )
+
+                    builder.setContentIntent(pendingIntent)
+                }
+
+                val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+
+                if(smallIconDrawable != null) {
+                    builder.setSmallIcon(smallIconDrawable!!)
+                } else {
+                    builder.setSmallIcon(recommend.context.applicationInfo.icon)
+                }
+
+                builder.setContentTitle(recommendPush.title)
+                builder.setContentText(recommendPush.body)
+                builder.setSound(uri)
+                builder.setVibrate(longArrayOf(0, 250, 250))
+                builder.setAutoCancel(true)
+
+                if (recommendPush.image != null) {
+                    try {
+                        val bigPictureStyle = NotificationCompat.BigPictureStyle()
+                        bigPictureStyle.bigPicture(getImage(recommendPush.image))
+
+                        if (recommendPush.title != null) {
+                            bigPictureStyle.setBigContentTitle(recommendPush.title)
+                        }
+
+                        if (recommendPush.body != null) {
+                            bigPictureStyle.setSummaryText(recommendPush.body)
+                        }
+
+                        builder.setStyle(bigPictureStyle)
+                        builder.setLargeIcon(getImage(recommendPush.image))
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+
+                builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+
+                val notification = builder.build()
+                notificationManager.notify(notificationId, notification)
+            } else {
+                checkAndUpdateSubscriptionStatus()
             }
         }
     }
