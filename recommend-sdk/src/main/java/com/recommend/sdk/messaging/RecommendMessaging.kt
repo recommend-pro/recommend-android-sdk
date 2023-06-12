@@ -31,6 +31,7 @@ import com.recommend.sdk.messaging.data.model.MessagingPushSubscriptionStatus
 import com.recommend.sdk.messaging.data.model.MessagingPushToken
 import com.recommend.sdk.messaging.exception.RecommendMessagingException
 import com.recommend.sdk.messaging.push.RecommendPush
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -262,6 +263,25 @@ class RecommendMessaging(
                 onComplete = onComplete,
                 onError = onError
             )
+        }
+    }
+
+    fun getSubscriptionStatus(
+        onComplete: ((status: MessagingPushSubscriptionStatus) -> Unit),
+        onError: ((error: Throwable) -> Unit)? = null
+    ) {
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            onError?.let { it(exception) }
+        }
+
+        scope.launch(exceptionHandler) {
+            val currentState = recommend.currentStateManager.getCurrentState()
+            val status = when(currentState.isSubscribedToPush) {
+                true -> MessagingPushSubscriptionStatus.SUBSCRIBED
+                false -> MessagingPushSubscriptionStatus.UNSUBSCRIBED
+                null -> MessagingPushSubscriptionStatus.NON_SUBSCRIBED
+            }
+            onComplete(status)
         }
     }
 
