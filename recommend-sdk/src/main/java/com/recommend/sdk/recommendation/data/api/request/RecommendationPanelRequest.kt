@@ -56,16 +56,11 @@ data class RecommendationPanelRequest(
      * @constructor Create Recommendation panel request filter
      */
     data class RecommendationPanelRequestFilter(
-        val type: Type,
         val code: String,
         val operator: String,
-        val value: String
-    ) {
-        enum class Type {
-            @SerializedName("product")
-            PRODUCT
-        }
-    }
+        val value: String,
+        val type: String? = null
+    )
 
     /**
      * Variations

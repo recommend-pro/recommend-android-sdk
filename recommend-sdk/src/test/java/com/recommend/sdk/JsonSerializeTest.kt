@@ -39,10 +39,15 @@ class JsonSerializeTest {
                 context = context,
                 filters = listOf(
                     RecommendationPanelRequest.RecommendationPanelRequestFilter(
-                        type = RecommendationPanelRequest.RecommendationPanelRequestFilter.Type.PRODUCT,
                         code = "filter_code",
                         operator = "eq",
                         value = "value",
+                    ),
+                    RecommendationPanelRequest.RecommendationPanelRequestFilter(
+                        code = "filter_code",
+                        operator = "eq",
+                        value = "value",
+                        type = "product"
                     )
                 ),
                 attrsToInclude = listOf(
@@ -71,7 +76,7 @@ class JsonSerializeTest {
 
         assertEquals(
             JsonHelper.toJson(recommendationPanelsRequest),
-            "{\"device_id\":\"8ce554fe-a8b0-4d69-9196-06028c0ada4e\",\"customer_id_hash\":\"28405844-d95d-40b7-80f4-e2e53908c9ae_customer\",\"email_hash\":\"email_hash_value\",\"store_code\":\"GB\",\"currency_code\":\"GBP\",\"environment_code\":\"default\",\"price_list\":{\"code\":\"test\",\"fallback_mode\":\"default\",\"alternatives\":[\"default\"]},\"metrics\":{\"non_interactive\":true,\"data\":[{\"code\":\"delivery_country\",\"value\":\"GB\"}]},\"page_type\":\"Product Details\",\"content_type\":\"json\",\"panels\":[{\"id\":\"test_panel_code\",\"context\":{\"search_term\":\"\",\"current\":{\"sku\":\"test_sku\",\"list_id\":\"\"},\"skus\":[],\"list_ids\":[]},\"filter\":[{\"type\":\"product\",\"code\":\"filter_code\",\"operator\":\"eq\",\"value\":\"value\"}],\"attrs_to_include\":[\"designer\",\"is_sale\",\"small_image\"]}]}"
+            "{\"device_id\":\"8ce554fe-a8b0-4d69-9196-06028c0ada4e\",\"customer_id_hash\":\"28405844-d95d-40b7-80f4-e2e53908c9ae_customer\",\"email_hash\":\"email_hash_value\",\"store_code\":\"GB\",\"currency_code\":\"GBP\",\"environment_code\":\"default\",\"price_list\":{\"code\":\"test\",\"fallback_mode\":\"default\",\"alternatives\":[\"default\"]},\"metrics\":{\"non_interactive\":true,\"data\":[{\"code\":\"delivery_country\",\"value\":\"GB\"}]},\"page_type\":\"Product Details\",\"content_type\":\"json\",\"panels\":[{\"id\":\"test_panel_code\",\"context\":{\"search_term\":\"\",\"current\":{\"sku\":\"test_sku\",\"list_id\":\"\"},\"skus\":[],\"list_ids\":[]},\"filter\":[{\"code\":\"filter_code\",\"operator\":\"eq\",\"value\":\"value\"},{\"code\":\"filter_code\",\"operator\":\"eq\",\"value\":\"value\",\"type\":\"product\"}],\"attrs_to_include\":[\"designer\",\"is_sale\",\"small_image\"]}]}"
         )
     }
 
@@ -104,7 +109,7 @@ class JsonSerializeTest {
                 context = context,
                 filters = listOf(
                     RecommendationPanelRequest.RecommendationPanelRequestFilter(
-                        type = RecommendationPanelRequest.RecommendationPanelRequestFilter.Type.PRODUCT,
+                        type = "product",
                         code = "filter_code",
                         operator = "eq",
                         value = "value",
@@ -136,7 +141,7 @@ class JsonSerializeTest {
 
         assertEquals(
             JsonHelper.toJson(recommendationPanelsRequest),
-            "{\"device_id\":\"8ce554fe-a8b0-4d69-9196-06028c0ada4e\",\"customer_id_hash\":null,\"email_hash\":\"email_hash_value\",\"store_code\":\"GB\",\"currency_code\":\"GBP\",\"environment_code\":null,\"price_list\":{\"code\":\"test\",\"fallback_mode\":\"default\",\"alternatives\":[\"default\"]},\"metrics\":{\"non_interactive\":true,\"data\":[{\"code\":\"delivery_country\",\"value\":\"GB\"}]},\"page_type\":\"Product Details\",\"content_type\":\"json\",\"panels\":[{\"id\":\"test_panel_code\",\"context\":{\"search_term\":\"\",\"current\":{\"sku\":\"test_sku\",\"list_id\":\"\"},\"skus\":[],\"list_ids\":[]},\"filter\":[{\"type\":\"product\",\"code\":\"filter_code\",\"operator\":\"eq\",\"value\":\"value\"}],\"attrs_to_include\":[\"designer\",\"is_sale\",\"small_image\"]}]}"
+            "{\"device_id\":\"8ce554fe-a8b0-4d69-9196-06028c0ada4e\",\"customer_id_hash\":null,\"email_hash\":\"email_hash_value\",\"store_code\":\"GB\",\"currency_code\":\"GBP\",\"environment_code\":null,\"price_list\":{\"code\":\"test\",\"fallback_mode\":\"default\",\"alternatives\":[\"default\"]},\"metrics\":{\"non_interactive\":true,\"data\":[{\"code\":\"delivery_country\",\"value\":\"GB\"}]},\"page_type\":\"Product Details\",\"content_type\":\"json\",\"panels\":[{\"id\":\"test_panel_code\",\"context\":{\"search_term\":\"\",\"current\":{\"sku\":\"test_sku\",\"list_id\":\"\"},\"skus\":[],\"list_ids\":[]},\"filter\":[{\"code\":\"filter_code\",\"operator\":\"eq\",\"value\":\"value\",\"type\":\"product\"}],\"attrs_to_include\":[\"designer\",\"is_sale\",\"small_image\"]}]}"
         )
     }
 
@@ -169,7 +174,6 @@ class JsonSerializeTest {
                 context = context,
                 filters = listOf(
                     RecommendationPanelRequest.RecommendationPanelRequestFilter(
-                        type = RecommendationPanelRequest.RecommendationPanelRequestFilter.Type.PRODUCT,
                         code = "filter_code",
                         operator = "eq",
                         value = "value",
@@ -206,9 +210,11 @@ class JsonSerializeTest {
             null
         )
 
+        val test = JsonHelper.toJson(recommendationPanelsRequest)
+
         assertEquals(
             JsonHelper.toJson(recommendationPanelsRequest),
-            "{\"device_id\":\"8ce554fe-a8b0-4d69-9196-06028c0ada4e\",\"customer_id_hash\":null,\"store_code\":\"default\",\"currency_code\":\"GBP\",\"environment_code\":null,\"price_list\":{\"code\":\"test\",\"fallback_mode\":\"default\",\"alternatives\":[\"default\"]},\"metrics\":{\"non_interactive\":true,\"data\":[{\"code\":\"delivery_country\",\"value\":\"GB\"}]},\"page_type\":\"Product Details\",\"content_type\":\"json\",\"panels\":[{\"id\":\"test_panel_code\",\"context\":{\"search_term\":\"\",\"current\":{\"sku\":\"test_sku\",\"list_id\":\"\"},\"skus\":[],\"list_ids\":[]},\"filter\":[{\"type\":\"product\",\"code\":\"filter_code\",\"operator\":\"eq\",\"value\":\"value\"}],\"attrs_to_include\":[\"designer\",\"is_sale\",\"small_image\"],\"variations\":{\"include\":true,\"attrs_to_include\":[\"designer\",\"is_sale\",\"small_image\"]}}]}"
+            "{\"device_id\":\"8ce554fe-a8b0-4d69-9196-06028c0ada4e\",\"customer_id_hash\":null,\"store_code\":\"default\",\"currency_code\":\"GBP\",\"environment_code\":null,\"price_list\":{\"code\":\"test\",\"fallback_mode\":\"default\",\"alternatives\":[\"default\"]},\"metrics\":{\"non_interactive\":true,\"data\":[{\"code\":\"delivery_country\",\"value\":\"GB\"}]},\"page_type\":\"Product Details\",\"content_type\":\"json\",\"panels\":[{\"id\":\"test_panel_code\",\"context\":{\"search_term\":\"\",\"current\":{\"sku\":\"test_sku\",\"list_id\":\"\"},\"skus\":[],\"list_ids\":[]},\"filter\":[{\"code\":\"filter_code\",\"operator\":\"eq\",\"value\":\"value\"}],\"attrs_to_include\":[\"designer\",\"is_sale\",\"small_image\"],\"variations\":{\"include\":true,\"attrs_to_include\":[\"designer\",\"is_sale\",\"small_image\"]}}]}"
         )
     }
 }
