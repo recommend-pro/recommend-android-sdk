@@ -34,15 +34,15 @@ data class RecommendationPanelRequest(
      * @constructor Create Recommendation panel request context
      */
     data class RecommendationPanelRequestContext(
-        @SerializedName("search_term") val searchTerm: String,
         @SerializedName("current") val currentContext: CurrentContext? = null,
+        @SerializedName("search_term") val searchTerm: String? = null,
         val skus: List<String>? = null,
         @SerializedName("list_ids") val listIds: List<String>? = null,
         @SerializedName("image_box_id") val imageBoxId: String? = null
     ) {
         data class CurrentContext(
             val sku: String,
-            @SerializedName("list_id") val listId: String
+            @SerializedName("list_id") val listId: String? = null
         )
     }
 
