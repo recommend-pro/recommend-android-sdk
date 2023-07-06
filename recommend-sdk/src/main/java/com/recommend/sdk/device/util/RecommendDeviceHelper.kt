@@ -48,8 +48,8 @@ class RecommendDeviceHelper {
             }
 
             return Metrics(
-                newMetrics.nonInteractive,
-                metricsData
+                metricsData,
+                newMetrics.nonInteractive
             )
         }
 

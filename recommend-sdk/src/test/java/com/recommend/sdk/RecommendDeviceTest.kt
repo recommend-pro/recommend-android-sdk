@@ -12,7 +12,6 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class RecommendDeviceTest {
     private val defaultMetrics1 = Metrics(
-        false,
         listOf(
             Metrics.Metric(
                 "default_metric_1",
@@ -22,10 +21,10 @@ class RecommendDeviceTest {
                 "default_metric_2",
                 "default_value_2"
             )
-        )
+        ),
+        false
     )
     private val defaultMetrics2 = Metrics(
-        true,
         listOf(
             Metrics.Metric(
                 "default_metric_1",
@@ -35,13 +34,13 @@ class RecommendDeviceTest {
                 "default_metric_2",
                 "default_value_2"
             )
-        )
+        ),
+        true
     )
 
     @Test
     fun `merging default and new metrics 1`() {
         val newMetrics = Metrics(
-            true,
             listOf(
                 Metrics.Metric(
                     "default_metric_1",
@@ -51,7 +50,8 @@ class RecommendDeviceTest {
                     "new_metric_2",
                     "new_value_2"
                 )
-            )
+            ),
+            true
         )
 
         val result = RecommendDeviceHelper.mergeMetrics(
@@ -84,7 +84,6 @@ class RecommendDeviceTest {
     @Test
     fun `merging default and new metrics 2`() {
         val newMetrics = Metrics(
-            true,
             listOf(
                 Metrics.Metric(
                     "default_metric_1",
@@ -94,7 +93,8 @@ class RecommendDeviceTest {
                     "default_metric_2",
                     "new_value_2"
                 )
-            )
+            ),
+            true
         )
 
         val result = RecommendDeviceHelper.mergeMetrics(
@@ -115,15 +115,13 @@ class RecommendDeviceTest {
 
         Assert.assertEquals(
             true,
-            result.nonInteractive == true
-                    && result.data.equalsIgnoreOrder(expectedMetricList)
+            result.nonInteractive && result.data.equalsIgnoreOrder(expectedMetricList)
         )
     }
 
     @Test
     fun `merging default and new metrics 3`() {
         val newMetrics = Metrics(
-            false,
             listOf(
                 Metrics.Metric(
                     "default_metric_1",
@@ -137,7 +135,8 @@ class RecommendDeviceTest {
                     "new_metric_3",
                     "new_value_3"
                 )
-            )
+            ),
+            false
         )
 
         val result = RecommendDeviceHelper.mergeMetrics(

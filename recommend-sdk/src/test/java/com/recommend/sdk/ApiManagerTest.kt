@@ -531,8 +531,8 @@ class ApiManagerTest {
         DateTimeHelper.getDeviceTime(),
         DateTimeHelper.getCurrentTime(),
         Metrics(
-            true,
-            listOf(Metrics.Metric("delivery_country", "testDeliveredCountry"))
+            listOf(Metrics.Metric("delivery_country", "testDeliveredCountry")),
+            true
         ),
         listOf(DeviceActivityRequest.ActivityRequest("test_type"))
     )
