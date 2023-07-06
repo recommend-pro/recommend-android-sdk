@@ -58,7 +58,7 @@ data class RecommendationPanelRequest(
     data class RecommendationPanelRequestFilter(
         val code: String,
         val operator: String,
-        val value: String,
+        val value: Any,
         val type: String? = null
     )
 
