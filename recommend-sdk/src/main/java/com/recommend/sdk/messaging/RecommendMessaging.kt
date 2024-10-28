@@ -158,19 +158,27 @@ class RecommendMessaging(
                 val time = System.currentTimeMillis()
                 val notificationId = (time / 1000).toInt()
 
-                if (recommendPush.url != null) {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(recommendPush.url))
-                    intent.putExtra(RECOMMEND_PUSH_PAYLOAD, JsonHelper.toJson(recommendPush))
+                val intent = if (!recommendPush.url.isNullOrEmpty()) {
+                    Intent(Intent.ACTION_VIEW, Uri.parse(recommendPush.url)).apply {
+                        putExtra(RECOMMEND_PUSH_PAYLOAD, JsonHelper.toJson(recommendPush))
+                    }
+                } else {
+                    recommend.context.packageManager.getLaunchIntentForPackage(recommend.context.packageName)?.apply {
+                        putExtra(RECOMMEND_PUSH_PAYLOAD, JsonHelper.toJson(recommendPush))
+                        addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                    }
+                }
 
-                    val pendingIntent = PendingIntent.getActivity(
+                val pendingIntent = intent?.let {
+                    PendingIntent.getActivity(
                         recommend.context,
                         notificationId,
-                        intent,
+                        it,
                         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
                     )
-
-                    builder.setContentIntent(pendingIntent)
                 }
+
+                builder.setContentIntent(pendingIntent)
 
                 val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
