@@ -160,9 +160,17 @@ class RecommendMessaging(
                 val notificationId = (time / 1000).toInt()
 
                 val intent = if (!recommendPush.url.isNullOrEmpty()) {
-                    Intent(Intent.ACTION_VIEW, Uri.parse(recommendPush.url)).apply {
-                        Log.d("Push url: ", recommendPush.url)
-                        putExtra(RECOMMEND_PUSH_PAYLOAD, JsonHelper.toJson(recommendPush))
+                    if (recommendPush.url.contains("https")) {
+                        Intent(Intent.ACTION_VIEW, Uri.parse(recommendPush.url)).apply {
+                            Log.d("Push url: ", recommendPush.url)
+                            putExtra(RECOMMEND_PUSH_PAYLOAD, JsonHelper.toJson(recommendPush))
+                        }
+                    } else {
+                        // Если URL не содержит https, выполняем просто открытие
+                        recommend.context.packageManager.getLaunchIntentForPackage(recommend.context.packageName)?.apply {
+                            putExtra(RECOMMEND_PUSH_PAYLOAD, JsonHelper.toJson(recommendPush))
+                            addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                        }
                     }
                 } else {
                     recommend.context.packageManager.getLaunchIntentForPackage(recommend.context.packageName)?.apply {
