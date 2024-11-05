@@ -166,7 +166,6 @@ class RecommendMessaging(
                             putExtra(RECOMMEND_PUSH_PAYLOAD, JsonHelper.toJson(recommendPush))
                         }
                     } else {
-                        // Если URL не содержит https, выполняем просто открытие
                         recommend.context.packageManager.getLaunchIntentForPackage(recommend.context.packageName)?.apply {
                             putExtra(RECOMMEND_PUSH_PAYLOAD, JsonHelper.toJson(recommendPush))
                             addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
@@ -189,7 +188,6 @@ class RecommendMessaging(
                 }
 
                 builder.setContentIntent(pendingIntent)
-
                 val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
                 if(smallIconDrawable != null) {
