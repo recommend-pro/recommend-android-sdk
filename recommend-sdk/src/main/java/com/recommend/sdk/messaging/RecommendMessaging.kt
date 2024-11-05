@@ -11,6 +11,7 @@ import android.graphics.Color
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
@@ -158,20 +159,35 @@ class RecommendMessaging(
                 val time = System.currentTimeMillis()
                 val notificationId = (time / 1000).toInt()
 
-                if (recommendPush.url != null) {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(recommendPush.url))
-                    intent.putExtra(RECOMMEND_PUSH_PAYLOAD, JsonHelper.toJson(recommendPush))
-
-                    val pendingIntent = PendingIntent.getActivity(
-                        recommend.context,
-                        notificationId,
-                        intent,
-                        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-                    )
-
-                    builder.setContentIntent(pendingIntent)
+                val intent = if (!recommendPush.url.isNullOrEmpty()) {
+                    if (recommendPush.url.contains("https")) {
+                        Intent(Intent.ACTION_VIEW, Uri.parse(recommendPush.url)).apply {
+                            Log.d("Push url: ", recommendPush.url)
+                            putExtra(RECOMMEND_PUSH_PAYLOAD, JsonHelper.toJson(recommendPush))
+                        }
+                    } else {
+                        recommend.context.packageManager.getLaunchIntentForPackage(recommend.context.packageName)?.apply {
+                            putExtra(RECOMMEND_PUSH_PAYLOAD, JsonHelper.toJson(recommendPush))
+                            addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                        }
+                    }
+                } else {
+                    recommend.context.packageManager.getLaunchIntentForPackage(recommend.context.packageName)?.apply {
+                        putExtra(RECOMMEND_PUSH_PAYLOAD, JsonHelper.toJson(recommendPush))
+                        addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                    }
                 }
 
+                val pendingIntent = intent?.let {
+                    PendingIntent.getActivity(
+                        recommend.context,
+                        notificationId,
+                        it,
+                        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                    )
+                }
+
+                builder.setContentIntent(pendingIntent)
                 val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
                 if(smallIconDrawable != null) {
